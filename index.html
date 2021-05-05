@@ -16,24 +16,60 @@
     .container{
       margin: 10px auto;
     }
+    h4{
+      border: 4px ridge black;
+    }
     #pokemon{
-      border: 1px solid black;
-      background-color: gainsboro;
+      border: 4px ridge red;
+      background-color: gray;
+      display: inline-block;
+      vertical-align: top;
+    }
+    #dex{
+      border: 4px ridge red;
+      display: inline-block;
+      min-height: 300px;
+      position: fixed;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h4 class="text-center fw-bold bg-secondary p-3 rounded">POKEMON</h4>
-    <div id="pokemon" class="col-12 text-center"> 
+    <h4 class="fs-1 text-center fw-bold bg-secondary p-3 rounded text-white bg-danger">POKEDEX</h4>
+    <div id="pokemon" class="col-7 text-center py-2 mx-5"></div>
+    <div id="dex" class="col-3 pt-2 ps-3 my-3 text-black">
+      <div id="imagen" class="text-center my-1"></div>
+      <div id="poke" class="fw-bold fs-1 my-1"></div>
+      <div id="tipo" class="fw-bold fs-5 my-1"></div>
+      <div id="altura" class="fw-bold fs-5 my-1"></div>
+      <div id="peso" class="fw-bold fs-5 my-1"></div>
     </div>
   </div>
   <script>
     $(document).ready(function(){
-      for(let num = 1; num <= 151; num++){
-        $('#pokemon').append(`<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${num}.png">`);
-      };
-    })
+      for(let i = 1; i <= 151; i++){
+        $('#pokemon').append(`<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${i}.png" id=${i}>`);
+      }; 
+      $('img').css('border', '1px solid black');
+      $('img').addClass('m-1 bg-white');
+      $('img').on('click',function(){
+        const id = $(this).attr('id');
+        // console.log(`"https://pokeapi.co/api/v2/pokemon/${id}/"`)
+        $.get(`https://pokeapi.co/api/v2/pokemon/${id}/`, function(res){
+          $('#poke').text(res.forms[0].name);
+          var tipo = `Type  :  ${res.types[0].type.name}`;
+            for(let index = 1; index < res.types.length; index++){
+              tipo += `, ${res.types[index].type.name}`
+          };
+          $('#tipo').text(tipo);
+          $('#altura').text(`Height  :  ${res.height/10} m`);
+          $('#peso').text(`Weight  :  ${res.weight/10} kg`);
+          $('#imagen').html(`<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${id}.png">`);
+          $('#poke').css('text-transform', 'capitalize');
+          $('#tipo').css('text-transform', 'capitalize');
+        });
+      });
+    });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
 </body>
